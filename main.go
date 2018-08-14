@@ -25,22 +25,21 @@ func main() {
 
 	updates, err := teleBot.ReceiveUpdateChan(u)
 
-	go func() {
-		for {
-			select {
-			case update := <-updates:
-				if update.Message.Text == "胡婷" {
-					msg := teleBot.NewMessage(update.Message.Chat.ID, MessageText)
-					msg.Text = "你怎么知道我爱她!?"
-					teleBot.Send(msg)
-				} else {
-					msg := teleBot.NewMessage(update.Message.Chat.ID, MessageText)
-					msg.Text = update.Message.Text
-					teleBot.Send(msg)
-				}
-			case <-quitChan:
-				break
+	for {
+		select {
+		case update := <-updates:
+			if update.Message.Text == "胡婷" {
+				msg := teleBot.NewMessage(update.Message.Chat.ID, MessageText)
+				msg.Text = "你怎么知道我爱她!?"
+				teleBot.Send(msg)
+			} else {
+				msg := teleBot.NewMessage(update.Message.Chat.ID, MessageText)
+				msg.Text = update.Message.Text
+				teleBot.Send(msg)
 			}
+		case <-quitChan:
+			break
 		}
-	}()
+	}
+
 }
