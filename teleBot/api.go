@@ -1,6 +1,7 @@
 package teleBot
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -11,13 +12,6 @@ import (
 	"net/url"
 	"time"
 )
-
-const (
-	httpaddr = "https://api.telegram.org/bot"
-	token    = "691471816:AAEYREfj5h4AwXyGNDKKSAIStkoiAdrux-A/"
-)
-
-var authorized = false
 
 var proxy = func(_ *http.Request) (*url.URL, error) {
 	return url.Parse("http://127.0.0.1:1087")
@@ -36,6 +30,61 @@ var client = &http.Client{
 		ResponseHeaderTimeout: time.Second * 60,
 		Proxy: proxy,
 	},
+}
+
+func MakeTuringResult(input string, messageType int) ([]TuringResults, error) {
+	res, err := MakeTuringRequest(input, messageType)
+	if err != nil {
+		return make([]TuringResults, 0), err
+	}
+	// FIXME: check status code
+	return res.Results, nil
+}
+
+func MakeTuringRequest(input string, messageType int) (*TuringResponse, error) {
+
+	var params TuringParams
+	var apiResp TuringResponse
+
+	params.UserInfo.ApiKey = turingApiKey
+	params.UserInfo.UserId = turingUserId
+	if messageType == 0 {
+		params.Perception.InputText.Text = input
+	} else if messageType == 1 {
+		params.Perception.InputImage.Url = input
+	}
+
+	paramsJson, err := json.Marshal(params)
+	if err != nil {
+		return &apiResp, err
+	}
+	fmt.Println(string(paramsJson))
+
+	request, err := http.NewRequest("POST", turingaddr, bytes.NewBuffer(paramsJson))
+	if err != nil {
+		return &apiResp, err
+	}
+	request.Header.Set("Content-Type", "application/json")
+
+	var client = http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		log.Panic(err)
+	}
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return &apiResp, err
+	}
+
+	err = json.Unmarshal(data, &apiResp)
+	if err != nil {
+		return &apiResp, err
+	}
+
+	return &apiResp, err
+
 }
 
 func NewBotApi() (User, error) {

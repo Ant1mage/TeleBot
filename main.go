@@ -28,14 +28,19 @@ func main() {
 	for {
 		select {
 		case update := <-updates:
-			if update.Message.Text == "胡婷" {
+			results, err := teleBot.MakeTuringResult(update.Message.Text, MessageText)
+			if err != nil {
+				log.Panic(err)
+			}
+			for _, result := range results {
 				msg := teleBot.NewMessage(update.Message.Chat.ID, MessageText)
-				msg.Text = "你怎么知道我爱她!?"
-				teleBot.Send(msg)
-			} else {
-				msg := teleBot.NewMessage(update.Message.Chat.ID, MessageText)
-				msg.Text = update.Message.Text
-				teleBot.Send(msg)
+				if result.ResultType == "url" {
+					msg.Text = result.Values.Url
+					teleBot.Send(msg)
+				} else if result.ResultType == "text" {
+					msg.Text = result.Values.Text
+					teleBot.Send(msg)
+				}
 			}
 		case <-quitChan:
 			break

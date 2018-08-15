@@ -128,3 +128,49 @@ type MessageConfig struct {
 	DisableWebPagePreview bool
 	MessageType           int
 }
+
+type TuringParams struct {
+	ReqType    int              `json:"reqType"`
+	Perception TuringPerception `json:"perception"`
+	UserInfo   TuringUser       `json:"userInfo"`
+}
+
+type TuringPerception struct {
+	InputText  TuringInputText  `json:"inputText"`
+	InputImage TuringInputImage `json:"inputImage"`
+}
+
+type TuringInputText struct {
+	Text string `json:"text"`
+}
+
+type TuringInputImage struct {
+	Url string `json:"url"`
+}
+
+type TuringUser struct {
+	ApiKey string `json:"apiKey"`
+	UserId string `json:"userId"`
+}
+
+type TuringResponse struct {
+	Intent  TuringIntent    `json:"intent"`
+	Results []TuringResults `json:"results"`
+}
+
+type TuringIntent struct {
+	Code       int    `json:"code"`
+	IntentName string `json:"intentName"`
+	ActionName string `json:"actionName"`
+}
+
+type TuringResults struct {
+	GroupType  int          `json:"groupType"`
+	ResultType string       `json:"resultType"`
+	Values     TuringValues `json:"values"`
+}
+
+type TuringValues struct {
+	Text string `json:"text"`
+	Url  string `json:"url"`
+}
