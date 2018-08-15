@@ -33,11 +33,12 @@ func main() {
 				log.Panic(err)
 			}
 			for _, result := range results {
-				msg := teleBot.NewMessage(update.Message.Chat.ID, MessageText)
-				if result.ResultType == "url" {
-					msg.Text = result.Values.Url
+				if result.ResultType == "image" {
+					msg := teleBot.NewMessage(update.Message.Chat.ID, MessageImage)
+					msg.Photo = result.Values.Image
 					teleBot.Send(msg)
 				} else if result.ResultType == "text" {
+					msg := teleBot.NewMessage(update.Message.Chat.ID, MessageText)
 					msg.Text = result.Values.Text
 					teleBot.Send(msg)
 				}

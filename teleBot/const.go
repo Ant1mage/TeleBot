@@ -7,3 +7,13 @@ const (
 	turingApiKey = "f66dfd0e5515435bad901a32fe1042fd"
 	turingUserId = "308926"
 )
+
+const (
+	MessageText = iota
+	MessageImage
+)
+
+var Endpoint = map[int]string{
+	MessageText:  "sendMessage",
+	MessageImage: "sendPhoto",
+}

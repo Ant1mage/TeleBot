@@ -171,6 +171,8 @@ type TuringResults struct {
 }
 
 type TuringValues struct {
-	Text string `json:"text"`
-	Url  string `json:"url"`
+	Text  string `json:"text"`
+	Url   string `json:"url"`
+	Voice string `json:"voice"`
+	Image string `json:"image"`
 }

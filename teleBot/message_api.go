@@ -30,15 +30,14 @@ func Send(msg MessageConfig) (Message, error) {
 		params.Add("text", msg.Text)
 	case 1:
 		params.Add("chat_id", fmt.Sprintf("%d", msg.ChatID))
-		params.Add("text", msg.Text)
-	case 2:
-		params.Add("chat_id", fmt.Sprintf("%d", msg.ChatID))
-		params.Add("text", msg.Text)
+		params.Add("photo", msg.Photo)
 	default:
 		break
 	}
 
-	message, err := makeMessageRequest("sendMessage", params)
+	endpoint := Endpoint[msg.MessageType]
+
+	message, err := makeMessageRequest(endpoint, params)
 
 	if err != nil {
 		return Message{}, err
